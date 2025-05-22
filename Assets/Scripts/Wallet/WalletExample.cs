@@ -2,14 +2,31 @@ using UnityEngine;
 
 public class WalletExample : MonoBehaviour
 {
-    [SerializeField] private Wallet _wallet;
+    private Wallet _wallet;
 
-    private void Start()
+    private void Awake()
     {
-        _wallet.AddCurrency(CurrencyType.Coin, 70);
-        _wallet.AddCurrency(CurrencyType.Diamond, 50);
-        _wallet.AddCurrency(CurrencyType.Energy, 30);
+        _wallet = GetComponent<Wallet>();
+    }
 
-        _wallet.SpendCurrency(CurrencyType.Coin, 5);
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+            _wallet.AddCurrency(CurrencyType.Coin, 10);
+
+        if (Input.GetKeyDown(KeyCode.W))
+            _wallet.AddCurrency(CurrencyType.Diamond, 10);
+
+        if (Input.GetKeyDown(KeyCode.E))
+            _wallet.AddCurrency(CurrencyType.Energy, 10);
+
+        if (Input.GetKeyDown(KeyCode.A))
+            _wallet.SpendCurrency(CurrencyType.Coin, 10);
+
+        if (Input.GetKeyDown(KeyCode.S))
+            _wallet.SpendCurrency(CurrencyType.Diamond, 10);
+
+        if (Input.GetKeyDown(KeyCode.D))
+            _wallet.SpendCurrency(CurrencyType.Energy, 10);
     }
 }
