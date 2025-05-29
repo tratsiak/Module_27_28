@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,18 +9,18 @@ public class TimerUIHearts : MonoBehaviour
 
     private List<GameObject> _hearts = new List<GameObject>();
 
+    private int _tick;
+
     private void Start()
     {
         _timer.TimerStarted += Initialize;
         _timer.TimerReset += OnReset;
-        _timer.Ticked += OnTicked;
     }
 
     private void OnDestroy()
     {
         _timer.TimerStarted -= Initialize;
         _timer.TimerReset -= OnReset;
-        _timer.Ticked -= OnTicked;
     }
 
     public void Initialize(int count)
@@ -32,13 +33,31 @@ public class TimerUIHearts : MonoBehaviour
             GameObject heart = Instantiate(_heartPrefab, transform);
             _hearts.Add(heart);
         }
-    }
 
-    private void OnTicked(int tick) => _hearts[tick].SetActive(false);
+        _tick = count;
+
+        StartCoroutine(DisableHeartPerSecond());
+    }
 
     private void OnReset()
     {
         foreach (GameObject heart in _hearts)
             heart.SetActive(true);
+
+        _tick = _hearts.Count;
+    }
+
+    private IEnumerator DisableHeartPerSecond()
+    {
+        while (_timer.CurrentTime >= 0 || _tick >= 0)
+        {
+            yield return new WaitUntil(() => _timer.IsRunning);
+
+            yield return new WaitForSeconds(1f);
+
+            _tick--;
+
+            _hearts[_tick].SetActive(false);
+        }
     }
 }

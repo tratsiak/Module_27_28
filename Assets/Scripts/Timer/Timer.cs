@@ -5,7 +5,6 @@ using UnityEngine;
 public class Timer : MonoBehaviour
 {
     public event Action<float> ValueChanged;
-    public event Action<int> Ticked;
     public event Action<int> TimerStarted;
     public event Action TimerReset;
     public event Action TimerStoped;
@@ -15,14 +14,16 @@ public class Timer : MonoBehaviour
     [SerializeField] private int _duration;
 
     private float _time;
-    private int _tick;
     private bool _isRunning;
     private bool _isStarted;
+
+    public float CurrentTime => _time;
+
+    public bool IsRunning => _isRunning;
 
     private void Start()
     {
         _time = _duration;
-        _tick = _duration;
     }
 
     private void Update()
@@ -50,8 +51,6 @@ public class Timer : MonoBehaviour
         _isRunning = true;
 
         TimerStarted?.Invoke(_duration);
-
-        StartCoroutine(Tick());
     }
 
     public void StopTimer()
@@ -67,7 +66,6 @@ public class Timer : MonoBehaviour
 
         _isStarted = false;
         _time = _duration;
-        _tick = _duration;
 
         TimerReset?.Invoke();
 
@@ -83,20 +81,6 @@ public class Timer : MonoBehaviour
             _isRunning = true;
 
             TimerResumed?.Invoke();
-        }
-    }
-
-    private IEnumerator Tick()
-    {
-        while (_time >= 0 || _tick >= 0)
-        {
-            yield return new WaitUntil(() => _isRunning);
-
-            yield return new WaitForSeconds(1f);
-
-            _tick--;
-
-            Ticked?.Invoke(_tick);
         }
     }
 }
