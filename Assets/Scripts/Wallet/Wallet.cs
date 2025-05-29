@@ -4,30 +4,26 @@ using UnityEngine;
 
 public class Wallet : MonoBehaviour
 {
-    public event Action<CurrencyType, int> Changed;
+    private Dictionary<CurrencyType, Currency> _currencies = new Dictionary<CurrencyType, Currency>();
 
-    private Dictionary<CurrencyType, int> currencies = new Dictionary<CurrencyType, int>();
+    public IReadOnlyDictionary<CurrencyType, Currency> Currencies => _currencies;
 
-    private void Start()
+    private void Awake()
     {
         foreach (CurrencyType currency in Enum.GetValues(typeof(CurrencyType)))
-            currencies[currency] = 0;
+            _currencies.Add(currency, new Currency(currency, default));
     }
 
-    public void AddCurrency(CurrencyType currencyType, int amount)
+    public void Add(CurrencyType currencyType, int amount) => _currencies[currencyType].Add(amount);
+
+    public void Spend(CurrencyType currencyType, int amount)
     {
-        currencies[currencyType] += amount;
+        if (_currencies[currencyType].Value < amount)
+        {
+            Debug.Log($"Insufficient amount of {currencyType}.");
+            return;
+        }
 
-        Changed?.Invoke(currencyType, currencies[currencyType]);
-    }
-
-    public void SpendCurrency(CurrencyType currencyType, int amount)
-    {
-        if (currencies[currencyType] <= amount)
-            currencies[currencyType] = 0;
-        else
-            currencies[currencyType] -= amount;
-
-        Changed?.Invoke(currencyType, currencies[currencyType]);
+        _currencies[currencyType].Spend(amount);
     }
 }
