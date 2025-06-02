@@ -1,19 +1,16 @@
-using System;
 using UnityEngine;
 
 public class Currency
 {
-    public event Action<CurrencyType, int> Changed;
-
-    public Currency(CurrencyType currencyType, int value)
+    public Currency(CurrencyType type, int value)
     {
-        CurrencyType = currencyType;
-        Value = value;
+        Type = type;
+        Amount = new ReactiveVariable<int>(value);
     }
 
-    public CurrencyType CurrencyType { get; private set; }
+    public CurrencyType Type { get; private set; }
         
-    public int Value { get; private set; }
+    public ReactiveVariable<int> Amount { get; private set; }
 
     public void Add(int amount)
     {
@@ -23,9 +20,7 @@ public class Currency
             return;
         }
 
-        Value += amount;
-
-        Changed?.Invoke(CurrencyType, Value);
+        Amount.Value += amount;
     }
 
     public void Spend(int amount)
@@ -36,8 +31,6 @@ public class Currency
             return;
         }
 
-        Value -= amount;
-
-        Changed?.Invoke(CurrencyType, Value);
+        Amount.Value -= amount;
     }
 }

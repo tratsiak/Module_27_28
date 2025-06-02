@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class WalletExample : MonoBehaviour
 {
+    [SerializeField] private WalletView _walletView;
+
     private Wallet _wallet;
 
     private void Awake()
     {
-        _wallet = GetComponent<Wallet>();
+        _wallet = new Wallet();
+    }
+
+    private void Start()
+    {
+        _walletView.Initialize(_wallet);
     }
 
     private void Update()
