@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    public event Action<float> ValueChanged;
     public event Action<int> TimerStarted;
     public event Action TimerReset;
     public event Action TimerStoped;
@@ -13,28 +12,27 @@ public class Timer : MonoBehaviour
 
     [SerializeField] private int _duration;
 
-    private float _time;
+    private ReactiveVariable<float> _time;
+
     private bool _isRunning;
     private bool _isStarted;
 
-    public float CurrentTime => _time;
+    public ReactiveVariable<float> CurrentTime => _time;
 
     public bool IsRunning => _isRunning;
 
     private void Start()
     {
-        _time = _duration;
+        _time = new ReactiveVariable<float>(_duration);
     }
 
     private void Update()
     {
         if (_isRunning)
         {
-            _time -= Time.deltaTime;
+            _time.Value -= Time.deltaTime;
 
-            ValueChanged?.Invoke(_time);
-
-            if (_time <= 0)
+            if (_time.Value <= 0)
             {
                 _isRunning = false;
                 TimerEnded?.Invoke();
@@ -65,7 +63,7 @@ public class Timer : MonoBehaviour
         StopTimer();
 
         _isStarted = false;
-        _time = _duration;
+        _time.Value = _duration;
 
         TimerReset?.Invoke();
 
@@ -76,7 +74,7 @@ public class Timer : MonoBehaviour
 
     public void ResumeTimer()
     {
-        if (_time > 0)
+        if (_time.Value > 0)
         {
             _isRunning = true;
 

@@ -49,7 +49,7 @@ public class TimerUIHearts : MonoBehaviour
 
     private IEnumerator DisableHeartPerSecond()
     {
-        while (_timer.CurrentTime >= 0 || _tick >= 0)
+        while (_timer.CurrentTime.Value >= 0 || _tick >= 0)
         {
             yield return new WaitUntil(() => _timer.IsRunning);
 

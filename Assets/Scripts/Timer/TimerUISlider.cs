@@ -10,13 +10,13 @@ public class TimerUISlider : MonoBehaviour
     private void Start()
     {
         _timer.TimerStarted += Initialize;
-        _timer.ValueChanged += OnValueChanged;
+        _timer.CurrentTime.Changed += OnValueChanged;
     }
 
     private void OnDestroy()
     {
         _timer.TimerStarted -= Initialize;
-        _timer.ValueChanged -= OnValueChanged;
+        _timer.CurrentTime.Changed -= OnValueChanged;
     }
 
     private void Initialize(int value)
@@ -25,8 +25,8 @@ public class TimerUISlider : MonoBehaviour
         _slider.value = value;
     }
 
-    private void OnValueChanged(float time)
+    private void OnValueChanged(float oldValue, float value)
     {
-        _slider.value = time;
+        _slider.value = value;
     }
 }
