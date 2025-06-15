@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 public class Timer : MonoBehaviour
@@ -17,7 +16,7 @@ public class Timer : MonoBehaviour
     private bool _isRunning;
     private bool _isStarted;
 
-    public ReactiveVariable<float> CurrentTime => _time;
+    public IReadOnlyVariable<float> CurrentTime => _time;
 
     public bool IsRunning => _isRunning;
 
